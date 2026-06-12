@@ -1,5 +1,7 @@
 # rust
 
+[https://doc.rust-lang.org/std/index.html](https://doc.rust-lang.org/std/index.html)
+
 ## Ligne de commandes rust
 
 * Accès documentation
@@ -60,3 +62,103 @@ main.rs
 ```rs
 .\main.exe
 ```
+
+## Cargo
+
+_Cargo est le système de compilation et de gestion de paquets de Rust_
+
+## Ligne de commandes Cargo
+
+* Accès documentation
+
+```sh
+cargo --help
+```
+
+* Voir la version
+
+```sh
+cargo --version
+# cargo 1.96.0 (30a34c682 2026-05-25)
+```
+
+* Créer un projet avec Cargo
+
+```sh
+cargo new hello_cargo
+#    Creating binary (application) `hello_cargo` package
+# note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+cd .\hello_cargo\
+```
+
+Fichier : Cargo.toml
+
+```toml
+[package]
+name = "hello_cargo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+Encart 1-2 : Contenu de Cargo.toml généré par cargo new
+```
+
+Ce fichier est au format TOML (Tom’s Obvious, Minimal Language), qui est le format de configuration de Cargo.
+
+* Compiler et exécuter un projet Cargo
+
+```sh
+cd .\hello_cargo\
+cargo build
+#   Compiling hello_cargo v0.1.0 (C:\Users\ruffi\WORKSPACE\rust\hello_cargo)
+#    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
+.\target\debug\hello_cargo.exe
+# Hello, world!
+# ou alors build + execute
+cargo run
+#    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+#     Running `target\debug\hello_cargo.exe`
+# Hello, world!
+```
+
+* Vérification compilation
+
+```sh
+cargo check
+#  Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+```
+
+* Création d'une nouvelle release (mise en production)
+
+```sh
+cargo build --release
+#     Compiling hello_cargo v0.1.0 (C:\Users\ruffi\WORKSPACE\rust\hello_cargo)
+#    Finished `release` profile [optimized] target(s) in 0.35s
+```
+
+### Program_1
+
+Nous allons coder un programme fréquemment réalisé par les débutants en programmation : le jeu du plus ou du moins. Le principe de ce jeu est le suivant : le programme va tirer au sort un nombre entre 1 et 100. Il invitera ensuite le joueur à saisir un nombre qu'il pense deviner. Après la saisie, le programme indiquera si le nombre saisi par le joueur est trop grand ou trop petit. Si le nombre saisi est le bon, le jeu affichera un message de félicitations et se fermera.
+
+#### Declarer une variable
+
+```rs
+let mut saisie = String::new();
+```
+
+la ligne `let mut saisie = String::new();` permet de créer une variable mutable nommée `saisie`. Le signe égal (`=`) indique à Rust que nous voulons désormais lier quelquechose à la variable. A la droite du signe égal, nous avons la valeur liée à `saisie`, qui est ici le résultat de l'utilisation de `String::new`, qui est une fonction qui retourne une nouvelle instance de `String`. `String` est un type de chaîne de caractères fourni par la bibliothèque standard, qui est une portion de texte encodée en UTF-8 et dont la longueur peut augmenter.
+
+La syntaxe `::` dans `String::new()` indique que new est une **fonction associée au type String**. Une fonction associée est une fonction qui est implémentée sur un type, ici String. Cette fonction new crée une nouvelle chaîne de caractères vide, une nouvelle String. Vous trouverez fréquemment une fonction new sur d'autres types, car c'est un nom souvent donné à une fonction qui crée une nouvelle valeur ou instance d'un type.
+
+### Recueillir la saisie utilisateur
+
+```rs
+    io::stdin()
+        .read_line(&mut saisie)
+```
+
+Si nous n'avions pas importé la bibliothèque `io` avec `use std::io` au début du programme, on aurait toujours pu utiliser la fonction en écrivant l'appel à la fonction de cette manière : `std::io::stdin`. La fonction `stdin` retourne une instance de `std::io::Stdin`, qui est un type qui représente une référence abstraite (handle) vers l'entrée standard du terminal dans lequel vous avez lancé le programme.
+
+Ensuite, la ligne `.read_line(&mut saisie)` appelle la méthode `read_line` sur l'entrée standard afin d'obtenir la saisie utilisateur. Nous passons aussi `&mut saisie` en argument de `read_line` pour lui indiquer dans quelle chaîne de caractère il faut stocker la saisie utilisateur. Le but final de `read_line` est de récupérer tout ce que l'utilisateur écrit dans l'entrée standard et de l'ajouter à la fin d'une chaîne de caractères (sans écraser son contenu) ; c'est pourquoi nous passons cette chaîne de caractères en argument. Cet argument doit être mutable pour que `read_line` puisse en modifier le contenu.
+
+Le `&` indique que cet argument est **une référence**, ce qui permet de laisser plusieurs morceaux de votre code accéder à une même donnée sans avoir besoin de copier ces données dans la mémoire plusieurs fois. Les références sont une fonctionnalité complexe, et un des avantages majeurs de Rust est qu'il rend sûr et simple l'utilisation des références. Il n'est pas nécessaire de trop s'apesantir sur les références pour terminer ce programme. Pour l'instant, tout ce que vous devez savoir est que _comme les variables, les références sont immuables par défaut_. D'où la nécessité d'écrire `&mut saisie` au lieu de `&saisie` pour la rendre mutable.
